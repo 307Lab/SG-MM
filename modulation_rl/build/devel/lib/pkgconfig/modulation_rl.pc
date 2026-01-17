@@ -1,0 +1,8 @@
+prefix=/home/cbl/mm_ws/src/modulation_rl/build/devel
+
+Name: modulation_rl
+Description: Description of modulation_rl
+Version: 0.0.0
+Cflags: -I/home/cbl/mm_ws/src/modulation_rl/include
+Libs: -L${prefix}/lib -lmodulation_rl
+Requires: roscpp rospy std_msgs pybind11_catkin interactive_markers

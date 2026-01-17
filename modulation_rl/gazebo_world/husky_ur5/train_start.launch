@@ -1,0 +1,10 @@
+<launch>
+  <group ns="robot1">
+    <node pkg="modulation_rl" type="main_wm.py" name="main_wm" output="screen" debug="true" >
+      <param name="world_type" value="gazebo"/>
+      <param name="env" value="husky_ur5"/>
+      <param name="task" value="picknplace"/>
+      <param name="robot_prefix" value="robot1"/>
+    </node>
+  </group>
+</launch>

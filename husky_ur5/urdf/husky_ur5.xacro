@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<robot name="husky_ur5" xmlns:xacro="http://wiki.ros.org/xacro">
+    <xacro:arg name="robot_namespace" default="$(optenv ROBOT_NAMESPACE /)" />
+    <xacro:arg name="gpu" default="false"/>
+    <xacro:property name="gpu" value="$(arg gpu)" />
+    <xacro:include filename="$(find ur_description)/urdf/inc/ur5_macro.xacro" />
+    <xacro:arg name="transmission_hw_interface" default="hardware_interface/EffortJointInterface"/>
+    <xacro:ur5_robot prefix="ur5_" transmission_hw_interface="$(arg transmission_hw_interface)" />
+    <xacro:include filename="$(find husky_description)/urdf/husky.urdf.xacro" />
+    <!--xacro:include filename="$(find vehicle_simulator)/urdf/robot.urdf.xacro" /-->
+
+    <joint name="joint_ur5" type="fixed">
+        <parent link="base_link"/>
+        <child link="ur5_base_link"/>
+        <origin xyz="0.13 0 0.25" rpy="0 0 0" />
+    </joint>
+
+    <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+    <xacro:VLP-16 parent="base_link" name="velodyne1" topic="/velodyne_points1" hz="1" samples="1" gpu="${gpu}">      <!--  hz = 10    samples = 200   -->
+        <origin xyz="-0.5 0 0.2" rpy="0 0 0" />
+    </xacro:VLP-16>
+    <xacro:VLP-16 parent="base_link" name="velodyne2" topic="/velodyne_points2" hz="1" samples="1" gpu="${gpu}">
+        <origin xyz="0.5 0 0.2" rpy="0 0 0" />
+    </xacro:VLP-16>
+
+    <!--<xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+  
+    <xacro:sensor_d435 name="camera" topics_ns="camera" parent="ur5_wrist_3_link" publish_pointcloud="true">
+        <origin xyz="-0.1 0 0" rpy="0 -1.57 0" />
+    </xacro:sensor_d435>-->
+
+    <xacro:include filename="$(find robotiq_85_description)/urdf/robotiq_85_gripper.urdf.xacro" />
+    
+    <xacro:property name="pi" value="3.1415"/>
+    <joint name="ur5_gripper_fixed" type="fixed">
+        <origin xyz="0 0 0 " rpy="0 0 0"/>
+        <parent link="ur5_wrist_3_link"/>
+        <child link="ee_link"/>
+    </joint>
+
+    <link name="ee_link"/>
+
+    <xacro:robotiq_85_gripper prefix="" parent="ee_link" >
+        <origin xyz="0 0 0" rpy="0 ${-pi/2} 0"/>
+    </xacro:robotiq_85_gripper>
+
+    <gazebo>
+        <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+            <alwaysOn>true</alwaysOn>
+            <updateRate>50.0</updateRate>
+            <bodyName>base_footprint</bodyName>
+            <topicName>ground_truth/state</topicName>
+            <gaussianNoise>0.01</gaussianNoise>
+            <frameName>world</frameName>
+            <xyzOffsets>0 0 0</xyzOffsets>
+            <rpyOffsets>0 0 0</rpyOffsets>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+      <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
+        <topicName>/planning_scene</topicName>
+        <sceneName>mytask</sceneName>
+        <robotName>husky_ur5</robotName>
+        <updatePeriod>0.5</updatePeriod>
+        <publishFrameId>odom</publishFrameId>
+      </plugin>
+    </gazebo>
+    <!-- <gazebo>
+        <plugin name="cup_glass_hex_gt_pose" filename="libgazebo_ros_p3d.so">
+            <alwaysOn>true</alwaysOn>
+            <updateRate>50.0</updateRate>
+            <bodyName>cup_glass_hex</bodyName>
+            <topicName>obj_pose</topicName>
+            <gaussianNoise>0.00001</gaussianNoise>
+            <frameName>world</frameName>
+            <xyzOffsets>0 0 0</xyzOffsets>
+            <rpyOffsets>0 0 0</rpyOffsets>
+        </plugin>
+    </gazebo> -->
+    
+  <xacro:include filename="$(find modulation_rl)/gazebo_world/common/plugins/modulation_bumper.gazebo.xacro" />
+  <xacro:modulation_bumper reference="base_link" sensor_name="base_link" collision_name="base_link_collision" />
+  <xacro:modulation_bumper reference="base_footprint" sensor_name="base_footprint" collision_name="base_footprint_collision" />
+  <xacro:modulation_bumper reference="front_left_wheel_link" sensor_name="front_left_wheel_link" collision_name="front_left_wheel_link_collision" />
+  <xacro:modulation_bumper reference="front_right_wheel_link" sensor_name="front_right_wheel_link" collision_name="front_right_wheel_link_collision" />
+  <xacro:modulation_bumper reference="rear_right_wheel_link" sensor_name="rear_right_wheel_link" collision_name="rear_right_wheel_link_collision" />
+  <xacro:modulation_bumper reference="rear_left_wheel_link" sensor_name="rear_left_wheel_link" collision_name="rear_left_wheel_link_collision" />
+  <xacro:modulation_bumper reference="top_chassis_link" sensor_name="top_chassis_link" collision_name="top_chassis_link_collision" />
+  <xacro:modulation_bumper reference="ur5_base_link" sensor_name="ur5_base_link" collision_name="ur5_base_link_collision" />
+  <xacro:modulation_bumper reference="front_bumper_link" sensor_name="front_bumper_link" collision_name="front_bumper_link_collision" />
+  <xacro:modulation_bumper reference="rear_bumper_link" sensor_name="rear_bumper_link" collision_name="rear_bumper_link_collision" />
+<!--   <xacro:modulation_bumper reference="velodyne2_base_link" sensor_name="velodyne2_base_link" collision_name="velodyne2_base_link_collision" />
+  <xacro:modulation_bumper reference="velodyne1_base_link" sensor_name="velodyne1_base_link" collision_name="velodyne1_base_link_collision" /> -->
+  <xacro:modulation_bumper reference="ur5_shoulder_link" sensor_name="ur5_shoulder_link" collision_name="ur5_shoulder_link_collision" />
+  <xacro:modulation_bumper reference="ur5_upper_arm_link" sensor_name="ur5_upper_arm_link" collision_name="ur5_upper_arm_link_collision" />
+  <xacro:modulation_bumper reference="ur5_forearm_link" sensor_name="ur5_forearm_link" collision_name="ur5_forearm_link_collision" />
+  <xacro:modulation_bumper reference="ur5_wrist_1_link" sensor_name="ur5_wrist_1_link" collision_name="ur5_wrist_1_link_collision" />
+  <xacro:modulation_bumper reference="ur5_wrist_2_link" sensor_name="ur5_wrist_2_link" collision_name="ur5_wrist_2_link_collision" />
+  <xacro:modulation_bumper reference="ur5_wrist_3_link" sensor_name="ur5_wrist_3_link" collision_name="ur5_wrist_3_link_collision" />
+  <xacro:modulation_bumper reference="gripper_base_link" sensor_name="gripper_base_link" collision_name="gripper_base_link_collision" />
+  <xacro:modulation_bumper reference="gripper_finger2_inner_knuckle_link" sensor_name="gripper_finger2_inner_knuckle_link" collision_name="gripper_finger2_inner_knuckle_link_collision" />
+  <xacro:modulation_bumper reference="gripper_finger1_inner_knuckle_link" sensor_name="gripper_finger1_inner_knuckle_link" collision_name="gripper_finger1_inner_knuckle_link_collision" />
+  <xacro:modulation_bumper reference="gripper_finger1_knuckle_link" sensor_name="gripper_finger1_knuckle_link" collision_name="gripper_finger1_knuckle_link_collision" />
+  <xacro:modulation_bumper reference="gripper_finger2_knuckle_link" sensor_name="gripper_finger2_knuckle_link" collision_name="gripper_finger2_knuckle_link_collision" />
+  <xacro:modulation_bumper reference="gripper_finger2_finger_tip_link" sensor_name="gripper_finger2_finger_tip_link" collision_name="gripper_finger2_finger_tip_link_collision" />
+  <xacro:modulation_bumper reference="gripper_finger1_finger_tip_link" sensor_name="gripper_finger1_finger_tip_link" collision_name="gripper_finger1_finger_tip_link_collision" />
+  <xacro:modulation_bumper reference="gripper_finger1_finger_link" sensor_name="gripper_finger1_finger_link" collision_name="gripper_finger1_finger_link_collision" />
+  <xacro:modulation_bumper reference="gripper_finger2_finger_link" sensor_name="gripper_finger2_finger_link" collision_name="gripper_finger2_finger_link_collision" />
+</robot>

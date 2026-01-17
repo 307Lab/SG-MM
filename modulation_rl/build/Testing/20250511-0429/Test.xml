@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20250511-0429-Experimental"
+	Name="cbl-ubuntu18"
+	Generator="ctest-3.26.4"
+	CompilerName="/usr/bin/g++-7"
+	CompilerVersion="7.5.0"
+	OSName="Linux"
+	Hostname="cbl-ubuntu18"
+	OSRelease="5.4.0-150-generic"
+	OSVersion="#167~18.04.1-Ubuntu SMP Wed May 24 00:51:42 UTC 2023"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="158"
+	ProcessorCacheSize="12288"
+	NumberOfLogicalCPU="8"
+	NumberOfPhysicalCPU="8"
+	TotalVirtualMemory="16383"
+	TotalPhysicalMemory="48125"
+	LogicalProcessorsPerPhysical="1"
+	ProcessorClockFrequency="4600"
+	>
+	<Testing>
+		<StartDateTime>May 11 12:29 CST</StartDateTime>
+		<StartTestTime>1746937759</StartTestTime>
+		<TestList/>
+		<EndDateTime>May 11 12:29 CST</EndDateTime>
+		<EndTestTime>1746937759</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

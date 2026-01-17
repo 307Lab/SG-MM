@@ -1,0 +1,24 @@
+<launch>
+    <arg name="local_costmap_frame"/>
+    <arg name="debug"      default="false"/>
+    <arg name="launch_prefix" value="gdb -ex run --args"     if="$(arg debug)"/>
+    <arg name="launch_prefix" value=""                   unless="$(arg debug)"/>
+
+
+<!--    <rosparam file="$(find pr2_navigation_config)/move_base/recovery_behaviors.yaml" command="load"  ns="costmap_node/costmap"/>-->
+    <rosparam file="$(find modulation_rl)/gazebo_world/common/costmap/costmap_common_local.yaml" command="load" ns="costmap_node/costmap"/>
+    <rosparam file="$(find modulation_rl)/gazebo_world/husky_ur5/costmap/costmap_common.yaml" command="load" ns="costmap_node/costmap"/>
+    <rosparam file="$(find modulation_rl)/gazebo_world/husky_ur5/costmap/costmap_local.yaml" command="load"  ns="costmap_node/costmap"/>
+    <group if="$(eval local_costmap_frame != 'none')">
+        <param name="/costmap_node/costmap/global_frame" value="$(arg local_costmap_frame)"/>
+    </group>
+    <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" clear_params="false" launch-prefix="$(arg launch_prefix)"/>
+
+    <rosparam command="load" file="$(find modulation_rl)/gazebo_world/common/costmap/costmap_common_global.yaml" ns="costmap_node_global/costmap"/>
+    <rosparam file="$(find modulation_rl)/gazebo_world/husky_ur5/costmap/costmap_common.yaml" command="load" ns="costmap_node_global/costmap"/>
+    <rosparam file="$(find modulation_rl)/gazebo_world/husky_ur5/costmap/costmap_global.yaml" command="load"  ns="costmap_node_global/costmap"/>
+
+
+    <node name="costmap_node_global" pkg="costmap_2d" type="costmap_2d_node" clear_params="true" launch-prefix="$(arg launch_prefix)"/>
+
+</launch>

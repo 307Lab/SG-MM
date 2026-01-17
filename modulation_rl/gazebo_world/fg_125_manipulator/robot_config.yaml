@@ -1,0 +1,44 @@
+name: "fg_125_manipulator"
+joint_model_group_name: "manipulator"
+torso_joint_name: "rail_joint_3"
+frame_id: "map"
+global_link_transform: "end_effector_link"
+tip_to_gripper_offset:
+  - 0.05
+  - 0.0
+  - 0.0
+gripper_to_base_rot_offset:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+base_cmd_topic: "/cmd_vel"
+base_vel_rng: 0.05
+base_rot_rng: 0.05
+torso_vel_rng: 0.2
+z_min: 0.0  #滑轨+机械臂可以伸展到的最低点位置（以map为坐标系）
+z_max: 0.25 #滑轨+机械臂可以伸展到的最高点位置（以map为坐标系）
+restricted_ws_z_min: 0.0
+restricted_ws_z_max: 0.25
+# max dist the ee plan is allowed to be from a feasible base plan
+# https://docs.hsr.io/hsrb_user_manual_en/overview/basic_specifications.html
+arm_range: 0.6   # (机械臂长35cm,上下移动的滑轨长25cm(可移动长度))
+gmm_base_offset: 0.02
+kinematics_solver_timeout: 0.01
+# values inferred from https://www.brain.kyutech.ac.jp/~hma/robots/hsr/
+robot_base_size_meters:
+  - 0.005
+  - 0.005
+inflation_radius_ee: 0.02 # 膨胀半径8cm
+initial_joint_values:
+  rail_joint_1: 0.0
+  rail_joint_2: -0.1554
+  rail_joint_3: 0.0
+  joint1: 0.0
+  joint2: 0.0
+  joint3: 0.0
+  joint4: 0.0
+gripper_collision_names:
+  - 'fg_125::gripper_link::gripper_link_collision'
+  - 'fg_125::end_effector_link::end_effector_link_collision'
+  - 'fg_125::gripper_link_sub::gripper_link_sub_collision'
